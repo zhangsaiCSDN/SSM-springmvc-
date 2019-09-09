@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>index.html</title>
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+	<script >
+		$(function(){
+			
+			$("button:eq(0)").click(function(){
+				var param = $("#f").serialize();
+				$.ajax({
+					type:"post",
+					url:"/ssm/depts",
+					data:param,
+					Headers:{
+						"Context-Type":"application/json"
+					},
+					success:function(data){
+							if(null != data && "" != data){
+								for(var key in data){
+									$("#sname").html(data["name"])
+									$("#sid").html(data["id"])
+									$("#sprice").html(data["price"])
+									$("#sphoto").html(data["photo"])
+								}
+							}else{
+								alert("添加成功");
+								$("#f")[0].reset();
+								initdata();
+							}	
+						}
+				
+					});
+				});
+			
+			function initdata(){
+				
+				$("table:eq(0) tr:not(:eq(0))").remove();
+				$.ajax({
+						type:"get",
+						url:"/ssm/depts",
+						Headers:{
+							"Context-Type":"application/json"
+						},
+						success:function(data){
+							var tbObj = $("table:eq(0)");
+							for(p in data){
+								var trObj = $("<tr>");
+								var tdObj1 = $("<td>");
+								var tdObj2 = $("<td>");
+			
+								var tdObj5 = $("<td>");
+								
+								tdObj1.append(data[p].did);
+								tdObj2.append(data[p].dname);
+						
+								
+								var upd = $("<button>修改</button>");
+								
+								
+								var del = $("<button>删除</button>");
+								
+								tdObj5.append(upd);
+								tdObj5.append(del);
+							
+								
+								trObj.append(tdObj1);
+								trObj.append(tdObj2);
+								trObj.append(tdObj5);
+								
+								tbObj.append(trObj);
+							}
+						}
+					
+					});
+				}
+			initdata();
+			
+		});
+	</script>
+	<form id="f">
+		id:<input  type="text" name="id"> <span id="sid"></span><br/>
+		name:<input  type="text" name="name"><span id="sname"></span><br/>
+		price:<input  type="text" name="price"><span id="sprice"></span><br/>
+		photo:<input  type="text" name="photo"><span id="sphoto"></span><br/>
+		<button type="button">添加商品</button>
+	</form>
+	
+	<table width="1002" border="1" align="center">
+		<tr>
+			<th>id</th>
+			<th>name</th>
+			<th>price</th>
+			<th>photo</th>
+			<th>操作</th>
+		</tr>
+	</table>
+</body>
+</html>
